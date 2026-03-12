@@ -150,8 +150,8 @@ These files are used for prototype data integration and are not optimized for pr
         pip install -r requirements.txt
 ```
 ### 4. Add files
-Place the provided .env file in the root directory (/mysite).<br>  
-Place the provided fis_personen.xlsx file in the media Folder (/mysite/media).
+Place the provided *.env* file in the root directory (/mysite).<br>  
+Place the provided *fis_personen.xlsx* file in the media folder (/mysite/media).
 ### 5. Apply migrations
 ```bash
         python manage.py migrate
