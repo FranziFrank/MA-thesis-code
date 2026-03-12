@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CC License Decision Tree</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+   <style>
+    #licenses {
+      font-family: "Helvetica Neue", sans-serif;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      padding: 20px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    #licenses .tree {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #licenses .node {
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 12px;
+      padding: 16px;
+      margin: 12px;
+      width: 300px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
+    }
+
+    #licenses .node:hover {
+      transform: scale(1.03);
+    }
+
+    #licenses .question {
+      font-weight: bold;
+      font-size: 16px;
+      margin-bottom: 12px;
+    }
+
+    #licenses .options {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 10px;
+    }
+
+    #licenses .option-btn {
+      background: #0077cc;
+      color: white;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+
+    #licenses .option-btn:hover {
+      background: #005fa3;
+    }
+
+    #licenses .result {
+      background: #c0e6fd;
+      border: 1px solid #0077cc;
+      color: #0077cc;
+      font-size: 15px;
+    }
+
+    #licenses .option-btn.selected {
+      background: #06319e; /* darker blue */
+      cursor: default;
+      opacity: 1;
+    }
+
+    #licenses .option-btn:disabled {
+      opacity: 0.9; /* keep it readable */
+    }
+  </style>
+</head>
+<body>
+  <h3>Which Creative Commons License is right for your publication?</h3>
+  <p><strong>Please note:</strong>The best license option for further usage is CC0.</p>
+  <div class="tree" id="tree"></div>
+
+  <script>
+    const questions = {
+      start: {
+        text: "Do you want attribution for your work?",
+        options: [
+          { label: "Yes", icon: "fa-solid fa-user", next: "by" },
+          { label: "No", icon: "fa-solid fa-ban", next: "zero" }
+        ]
+      },
+      by: {
+        text: "Do you want to require adaptations of your work to use the same license?",
+        options: [
+          { label: "Yes", icon: "fa-solid fa-sync", next: "by-sa" },
+          { label: "No", icon: "fa-solid fa-unlock", next: "by-free" }
+        ]
+      },
+      "by-sa": {
+        text: "Do you want to allow others to use your work commercially?",
+        options: [
+          { label: "Yes", icon: "fa-solid fa-dollar-sign", next: "by-sa-commercial" },
+          { label: "No", icon: "fa-solid fa-hand-holding-usd", next: "by-sa-nc" }
+        ]
+      },
+      "by-sa-nc": {
+        text: "Do you want to allow others to remix, adapt, or build upon your work?",
+        options: [
+          { label: "Yes", icon: "fa-solid fa-paintbrush", next: "by-sa-nc-remix" },
+          { label: "No", icon: "fa-solid fa-ban", next: "by-sa-nc-nd" }
+        ]
+      },
+      // Results
+      zero: { result: "CC0 – No Rights Reserved (Public Domain)", icons: ["static/story/cc-icons-svg/zero.svg"] },
+      "by-free": { result: "CC-BY – Attribution only", icons: ["static/story/cc-icons-svg/cc.svg","static/story/cc-icons-svg/by.svg"]},
+      "by-sa-commercial": { result: "CC-BY-SA – Attribution & ShareAlike, commercial use allowed", icons: ["static/story/cc-icons-svg/cc.svg","static/story/cc-icons-svg/by.svg","static/story/cc-icons-svg/sa.svg"]},
+      "by-sa-nc-remix": { result: "CC-BY-SA-NC – Attribution, ShareAlike, NonCommercial, remixing allowed", icons: ["static/story/cc-icons-svg/cc.svg","static/story/cc-icons-svg/by.svg", "static/story/cc-icons-svg/sa.svg", "static/story/cc-icons-svg/nc-eu.svg"]},
+      "by-sa-nc-nd": { result: "CC-BY-SA-NC-ND – Attribution, ShareAlike, NonCommercial, NoDerivatives", icons: ["static/story/cc-icons-svg/cc.svg","static/story/cc-icons-svg/by.svg", "static/story/cc-icons-svg/sa.svg", "static/story/cc-icons-svg/nc-eu.svg","static/story/cc-icons-svg/nd.svg"]}
+    };
+
+    const tree = document.getElementById("tree");
+
+    function renderNode(nodeKey) {
+      const nodeData = questions[nodeKey];
+      const node = document.createElement("div");
+      node.className = "node";
+
+      if (nodeData.result) {
+        node.classList.add("result");
+
+        // Heading
+        const headingDiv = document.createElement("div");
+        headingDiv.className = "question";
+        headingDiv.innerText = "Your Recommended License:";
+        node.appendChild(headingDiv);
+
+        // Icons as images
+        const iconsDiv = document.createElement("div");
+        iconsDiv.style.marginBottom = "8px";
+        iconsDiv.style.display = "flex";
+        iconsDiv.style.justifyContent = "center";
+        iconsDiv.style.gap = "6px";
+
+        nodeData.icons.forEach(iconPath => {
+          const img = document.createElement("img");
+          img.src = iconPath;
+          img.style.width = "24px";
+          img.style.height = "24px";
+          iconsDiv.appendChild(img);
+        });
+        node.appendChild(iconsDiv);
+
+        // Result text
+        const resultDiv = document.createElement("div");
+        resultDiv.innerText = nodeData.result;
+        node.appendChild(resultDiv);
+
+      } else {
+        node.innerHTML = `<div class="question">${nodeData.text}</div>`;
+        const optionsDiv = document.createElement("div");
+        optionsDiv.className = "options";
+
+        nodeData.options.forEach(opt => {
+          const btn = document.createElement("button");
+          btn.className = "option-btn";
+          btn.innerHTML = `<i class="${opt.icon}"></i> ${opt.label}`;
+          btn.onclick = () => {
+            btn.classList.add("selected");
+            optionsDiv.querySelectorAll(".option-btn").forEach(b => {
+              b.disabled = true;
+            });
+            const nextNode = renderNode(opt.next);
+            tree.appendChild(nextNode);
+            btn.disabled = true; // lock chosen path
+          };
+          optionsDiv.appendChild(btn);
+        });
+
+        node.appendChild(optionsDiv);
+      }
+
+      return node;
+    }
+
+
+    // Start Tree
+    tree.appendChild(renderNode("start"));
+  </script>
+</body>
+</html>

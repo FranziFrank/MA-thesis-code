@@ -1,0 +1,63 @@
+# === Python general ===
+__pycache__/
+*.py[cod]
+*.so
+*.log
+*.tmp
+*.swp
+*.bak
+*.pid
+
+# === Bytecode cache ===
+*.pyc
+*.pyo
+*.pyd
+*.pyc.*
+
+# === Virtualenv ===
+venv/
+env/
+ENV/
+
+# === Django specific ===
+*.sqlite3
+db.sqlite3
+
+# Ignore media files (e.g., Excel, uploads)
+# media/*
+# !media/.gitkeep  # Keep the folder structure
+
+# === Static and build artifacts ===
+staticfiles/
+static_root/
+# static/
+build/
+dist/
+
+# === Editor settings ===
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# === OS / Misc ===
+.DS_Store
+Thumbs.db
+
+# === Packaging ===
+*.egg-info/
+.eggs/
+*.egg
+
+# === Environment variables ===
+.env
+.env.*
+
+# === Jupyter ===
+.ipynb_checkpoints/
+
+# === Node/npm (if frontend tools involved) ===
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log

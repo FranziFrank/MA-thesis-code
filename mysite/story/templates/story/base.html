@@ -1,0 +1,369 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}Data Story{% endblock %}</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://unpkg.com/scrollama"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <link rel="stylesheet" href="{% static 'story/css/oa_chart.css' %}">
+  <style>
+    :root {
+      --max-width: 760px;
+      --color-text: #111;
+      --color-muted: #777;
+      --color-bg: #fdfdfd;
+      --color-highlight: #f0f0f0;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--color-bg);
+      font-family: "Georgia", serif;
+      color: var(--color-text);
+      line-height: 1.7;
+      font-size: 18px;
+    }
+
+    .story-container {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 2rem 1.25rem;
+    }
+
+    .story-block {
+      margin-bottom: 3rem;
+    }
+
+    .story-block h2 {
+      font-family: "Helvetica Neue", sans-serif;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: var(--color-text);
+    }
+
+    .story-block p {
+      margin: 0.5rem 0;
+    }
+
+    .quote-block {
+      border-left: 4px solid var(--color-highlight);
+      padding-left: 1rem;
+      margin: 2rem 0;
+      font-style: italic;
+      color: var(--color-muted);
+    }
+
+    .infobox {
+      background: var(--color-highlight);
+      padding: 1rem;
+      border-radius: 6px;
+      margin: 2rem 0;
+    }
+
+    .visual-block {
+      text-align: center;
+      margin: 2rem 0;
+    }
+
+    @media screen and (max-width: 600px) {
+      body {
+        font-size: 16px;
+      }
+    }
+
+    .scrolly-container {
+      display: flex;
+      gap: 2rem;
+      max-width: 960px;
+      margin: 4rem auto;
+    }
+
+    .graphic {
+      flex: 1;
+      position: sticky;
+      top: 2rem;
+      height: 300px;
+      background: #f4f4f4;
+      border-radius: 8px;
+      padding: 1rem;
+    }
+
+    .text {
+      flex: 1;
+    }
+
+    .step {
+      margin: 200px 0;
+      padding: 1rem;
+      background: white;
+      border-left: 4px solid transparent;
+      transition: border 0.3s;
+    }
+
+    .step.is-active {
+      border-color: #0077cc;
+      background: #eef7ff;
+    }
+
+    /* Container for widget + results side by side */
+    .bison-container {
+      display: flex;
+      gap: 20px; /* space between the two */
+      align-items: flex-start;
+    }
+
+    /* Each component takes roughly half the width */
+    #bison-widget, #bison-results {
+      flex: 1; 
+      border: 1px solid #ccc;
+      padding: 10px;
+      box-sizing: border-box;
+      min-width: 300px; /* ensures responsive layout */
+    }
+
+    /* --------------------------
+   Open Access Pie Chart
+    --------------------------- */
+    #oa-chart-container {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      padding: 20px;
+      margin-bottom: 40px;
+      text-align: center;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    #oa-chart-container h3 {
+      margin-bottom: 16px;
+      font-size: 16px;
+      font-weight: 600;
+      color: #111;
+    }
+
+    #oa-pie svg {
+      display: block;
+      margin: 0 auto;
+      height: 300px;      /* smaller to prevent large gaps */
+      width: 300px;
+    }
+
+    #oa-pie text {
+      font-family: "Inter", sans-serif;
+    }
+
+    .tooltip {
+      position: absolute;
+      pointer-events: none;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 6px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      padding: 8px 12px;
+      font-size: 13px;
+      color: #111;
+      line-height: 1.4;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    #story-progress {
+      position: fixed;
+      top: 20%;
+      right: 20px;
+      width: 180px;
+      font-size: 14px;
+      z-index: 1000;
+    }
+
+    #story-progress ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    #story-progress li {
+      cursor: pointer;
+      padding: 6px 0;
+      color: #777;
+      transition: color 0.2s;
+    }
+
+    #story-progress li.active {
+      color: #0077cc;
+      font-weight: 600;
+    }
+
+    #story-progress li:hover {
+      color: #000;
+    }
+
+    #progress-line {
+      position: absolute;
+      left: -12px;
+      top: 0;
+      width: 4px;
+      height: 100%;
+      background: #ddd;
+    }
+
+    #progress-line-fill {
+      width: 100%;
+      height: 0%;
+      background: #0077cc;
+      transition: height 0.2s;
+    }
+
+    .ref {
+      cursor: pointer;
+      color: #0077cc;
+      font-size: 0.8em;
+      vertical-align: super;
+    }
+
+    .ref:hover {
+      text-decoration: underline;
+    }
+
+    /*#references li.highlight {
+      background: #fff8dc;
+      transition: background 0.5s;
+    }*/
+
+    .recommendation-panel {
+      background: white;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      padding: 20px;
+      padding-bottom: 40px;
+      margin-bottom: 40px;
+    }
+
+    #recommendations-title {
+      margin-top: 0;
+      font-size: 18px;
+    }
+
+    .recommendations-intro {
+      font-size: 14px;
+      color: #555;
+    }
+
+    /* --------------------------
+      Open Access Accordion
+    --------------------------- */
+    .oa-accordion {
+      max-width: 700px;
+      margin: 20px auto;
+      font-family: sans-serif;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+
+    .oa-item + .oa-item {
+      border-top: 1px solid #eee;
+    }
+
+    .oa-toggle {
+      width: 100%;
+      text-align: left;
+      padding: 16px;
+      background: #f9f9f9;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+
+    .oa-toggle:hover {
+      background: #519bcf; /* leichte blaue Hervorhebung */
+    }
+
+    .oa-toggle::after {
+      content: '+';
+      float: right;
+      font-weight: bold;
+      transition: transform 0.3s;
+    }
+
+    .oa-toggle.active::after {
+      content: '−';
+    }
+
+    .oa-content {
+      max-height: 0;
+      overflow: hidden;
+      background: #fff;
+      transition: max-height 0.3s ease, padding 0.3s ease;
+      padding: 0 16px;  /* horizontales Padding immer setzen */
+    }
+
+    .oa-content p {
+      margin: 12px 0;
+      line-height: 1.5;
+    }
+
+    #pie100-message {
+      display: none;
+      position: absolute;
+      top: 70%;
+      left: 55%;
+      transform: translateX(-50%);
+      background: #e0ffe0;
+      border: 1px solid #00aa00;
+      padding: 12px 16px;
+      border-radius: 6px;
+      font-weight: bold;
+      color: #007700;
+      max-width: 300px;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      z-index: 1000;
+      pointer-events: none;
+    }
+
+
+  </style>
+</head>
+<body>
+  <div id="tooltip"></div>
+  <main class="story-container">
+    {% block content %}{% endblock %}
+  </main>
+
+  {% block scripts %}
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const scroller = scrollama();
+
+      scroller
+        .setup({
+          step: ".step",
+          offset: 0.6,
+        })
+        .onStepEnter(response => {
+          // Highlight active step
+          d3.selectAll(".step").classed("is-active", false);
+          d3.select(response.element).classed("is-active", true);
+
+          // Call visualization update (if defined)
+          if (typeof window.updateVis === "function") {
+            window.updateVis(response.element.dataset.step);
+          }
+        });
+
+      window.addEventListener("resize", scroller.resize);
+    });
+  </script>
+  {% endblock %}
+</body>
+</html>

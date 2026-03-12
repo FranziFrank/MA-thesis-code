@@ -1,0 +1,344 @@
+/* --------------------------
+   General Page & Body
+--------------------------- */
+body {
+  font-family: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background-color: #f9f9f9;
+  color: #222;
+  margin: 0;
+  padding: 20px;
+}
+
+h3 {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #111;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+/* --------------------------
+   Chart Container
+--------------------------- */
+#chart-placeholder {
+  background: #fff;
+  position: relative;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 20px;
+  padding-bottom: 40px;
+  margin-bottom: 40px;
+  pointer-events: auto;
+}
+
+#chart-placeholder svg {
+  pointer-events: all;
+}
+/* --------------------------
+   SVG Elements
+--------------------------- */
+svg {
+  width: 100%;
+  height: 1000px;
+  overflow: visible;
+  display: block;
+}
+
+.dot {
+  fill: #323f4e;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dot:hover {
+  fill: rgb(252, 92, 252);
+}
+
+.slice {
+  cursor: pointer;
+  transition: transform 0.2s, opacity 0.2s;
+}
+
+.slice:hover {
+  opacity: 0.85;
+  transform: scale(1.02);
+}
+
+/* --------------------------
+   Axes
+--------------------------- */
+.axis-label {
+  font-size: 12px;
+  fill: #555;
+  font-weight: 500;
+}
+
+.axis path,
+.axis line {
+  stroke: #ddd;
+}
+
+/* --------------------------
+   Tooltip
+--------------------------- */
+#tooltip {
+  position: absolute;
+  pointer-events: none;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 10px 14px;
+  border-radius: 6px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+  font-size: 13px;
+  color: #111;
+  line-height: 1.4;
+  max-width: 300px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 5000;
+}
+
+#tooltip a {
+  text-decoration: none;
+  color: #e63946;
+  font-weight: 600;
+}
+
+#tooltip a:hover {
+  text-decoration: underline;
+}
+
+/* 👇 ONLY when pinned */
+#tooltip.pinned {
+  pointer-events: auto;
+}
+
+/* --------------------------
+   Recommendations Panel
+--------------------------- */
+#recommendations-panel {
+  display: none;             /* hidden until scatter appears */
+  align-items: flex-end;     /* align tab text to bottom */
+  gap: 30px;                 /* spacing between tabs */
+  margin-top: 40px;
+  border-bottom: 2px solid #eee; /* subtle line under tabs */
+  padding-bottom: 6px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 20px;
+  margin-bottom: 40px;
+}
+
+#recommendations-panel h3 {
+  margin: 0;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 15px;
+  color: #666;
+  padding: 4px 0;
+  position: relative;
+  transition: color 0.2s;
+}
+
+
+/* Active tab indicator */
+#recommendations-panel h3.active {
+  color: #0077cc;
+}
+
+#recommendations-panel h3.active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -6px;
+  height: 3px;
+  background: #0077cc;
+  border-radius: 2px;
+}
+
+#recommendation-box {
+  position: fixed;
+  top: 90px;
+  right: 20px;
+  width: 320px;
+  max-height: 80vh;
+  overflow-y: auto;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+  padding: 16px;
+  display: none; /* show via JS */
+  z-index: 1200;
+}
+
+#recommendation-info {
+  margin-top: 15px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #444;
+  max-width: 800px;
+}
+
+#recommendation-info strong {
+  color: #111;
+  font-weight: 600;
+}
+
+.rec-title {
+  background-color: lightgrey;
+  cursor: pointer;
+}
+.rec-title:hover {
+  text-decoration: underline;
+}
+
+/* --------------------------
+   Pie chart labels
+--------------------------- */
+.pie-label {
+  font-size: 12px;
+  font-weight: 600;
+  fill: #fff;
+  text-anchor: middle;
+}
+
+/* --------------------------
+   Responsive
+--------------------------- */
+@media (max-width: 768px) {
+  #chart-placeholder {
+    padding: 15px;
+  }
+
+  h3 {
+    font-size: 14px;
+  }
+
+  #recommendation-info div {
+    font-size: 12px;
+  }
+}
+
+/*------------------------
+    Sherpa-Romeo-Panel
+--------------------------*/
+#sherpa-panel {
+  position: fixed;
+  top: 90px;
+  left: 20px;
+  width: 320px;
+  max-height: 80vh;
+  overflow-y: auto;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+  padding: 16px;
+  display: none; /* show via JS */
+  z-index: 1200;
+}
+
+#sherpa-panel h4 { margin: 0 0 8px 0; color: #111; font-size: 15px; }
+#sherpa-panel p { margin: 6px 0; color: #333; font-size: 12px; line-height: 1.4; }
+#sherpa-panel ul {font-size: 12px;}
+#sherpa-panel a { color: #0077cc; text-decoration: none; }
+#sherpa-close { position: absolute; top: 8px; right: 8px; background: transparent; border: none; cursor: pointer; font-size: 16px; }
+
+/* Hidden state when chart not in view */
+#sherpa-panel.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+#scatter-controls {
+  margin-top: 20px;       /* space below the SVG */
+  width: 100%;            /* full width of container */
+  max-width: 900px;       /* optional max width */
+  background: #f9f9f9;
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+#scatter-controls h4 {
+  margin-top: 0;
+}
+
+/* --------------------------
+   Right Legend Panel
+--------------------------- */
+#legend-panel {
+  position: fixed;
+  top: 90px;
+  right: 20px;
+  width: 300px;
+  max-height: 80vh;
+  overflow-y: auto;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+  padding: 16px;
+  z-index: 1200;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity 0.2s ease;
+}
+
+#legend-panel h4 {
+  margin: 12px 0 6px 0;
+  color: #111;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: default;
+}
+
+#legend-panel h5 {
+  margin: 12px 0 6px 0;
+  color: #333;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+#legend-panel p,
+#legend-panel h4.legend-clickable,
+#legend-panel .legend-item {
+  font-size: 14px;
+  color: #333;
+  margin: 0 0 6px 0;
+  cursor: pointer;
+}
+
+#legend-panel p:hover,
+#legend-panel .legend-item:hover {
+  color: #000;
+}
+
+.legend-clickable {
+  color: #0077cc;
+  font-weight: 600;
+}
+
+#legend-close { position: absolute; top: 8px; right: 8px; background: transparent; border: none; cursor: pointer; font-size: 16px; z-index: 1300; }
+
+/* Hidden state when chart not in view */
+#legend-panel.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* Scrollable subjects list (max 5 visible items) */
+#subjects-list {
+  max-height: 80px;
+  overflow-y: auto;
+  padding-left: 10px;
+  border-left: 3px solid #eee;
+}
+#subjects-list::-webkit-scrollbar {
+  width: 6px;
+}
+#subjects-list::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 3px;
+}

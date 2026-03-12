@@ -1,0 +1,163 @@
+{% extends "story/base.html" %}
+
+{% load static %}
+
+{% block title %}Unlocking Open Access{% endblock %}
+
+{% block content %}
+<nav id="story-progress">
+  <ul>
+    <li data-target="open-access-quiz">Open Access</li>
+    <li data-target="oa-chart-container">OA at University of Bamberg</li>
+    <li data-target="quo-vadis">Your publications</li>
+    <li data-target="licenses">Licenses</li>
+    <li data-target="where-oa">Where to publish</li>
+    <li data-target="funds">Funding</li>
+    <!--<li data-target="references">References</li>-->
+  </ul>
+  <div id="progress-line">
+    <div id="progress-line-fill"></div>
+  </div>
+</nav>
+
+<h1>Unlocking Open Access</h1>
+
+<div id="open-access-quiz">
+    <h2>What you need to know about Open Access</h2>
+    <p>
+      To tailor the information to your needs, we’ll start with a few short questions and gradually explore how Open Access relates to your own research.
+    </p>
+  {% include "story/components/open-access-quiz.html" %}
+  <open-access-quiz></open-access-quiz>
+</div>
+<br>
+
+<p>Before looking at individual publications, it helps to get a broader picture.</p>
+<p>How open is research at the University of Bamberg overall?</p>
+<div id="oa-chart-container">
+  <h3>Open Access at University of Bamberg</h3>
+  <div id="oa-pie"></div>
+  <p>Open Access vs Non Open Access</p>
+  <p><em>The pie chart is based on the publications by people affiliated with the University of Bamberg that are currently listed in OpenAlex.</em></p>
+  <script type="module" src="{% static 'story/js/oa_information.js' %}"></script>
+</div>
+
+<section id="quo-vadis" class="story-intro" style="position: relative">
+  <h2>How open is your work?</h2>
+  {% include "story/components/person_dropdown.html" %}
+
+  <p>By clicking <i>Explore</i> you can find a concluded Open Access status based on the publications listed in OpenAlex.</p>
+  
+  <div id="chart-placeholder">
+    {% if data.openalex_error %}
+      <p id="no-openalex-msg" style="text-align:center; color:#555; font-style:italic;">
+      {{ data.openalex_error }}
+    </p>
+  {% endif %}
+    <svg width="800" height="800"></svg>
+  </div>
+  
+  <div id="pie100-message">
+    <p>Congratulations! All your recent publications are Open Access!</p>
+    <p style="color: black; font-weight: normal;">If you want to check your other publications, please click on the <i>Non Open Access</i> slice of the pie chart above.</p>
+  </div>
+  
+  {% include "story/components/legend_panel.html" %}
+
+  <div id="chart-container">
+  {% if data %}
+  {{ data.works_data|json_script:"chart-data" }}
+  {% if data.works_data %}
+    {{ data.works_data|json_script:"chart-data" }}
+    <script type="module" src="{% static 'story/js/oa_chart.js' %}"></script>
+  {% endif %}
+  {% endif %}
+
+  </section>
+  
+<div id="recommendations-panel" class="recommendation-panel" style="display: none;">
+    <div class="recommendations-intro">
+    <h2>Recommendations for Green Open Access</h2>
+    <p id="rec-intro">Based on your resent Non Open Access publications, the following publications with Green Open Access options could be particularly interesting.
+    </p></div>
+<div id="recommendation-info" class="recommendation-text"></div>
+</div>
+
+<div id="sherpa-panel" aria-hidden="true">
+  <button id="sherpa-close" aria-label="Close Sherpa panel">✖</button>
+  <div id="sherpa-content">
+    <p>Select a publication's "Sherpa" link in the tooltip to view Green OA details here.</p>
+  </div>
+</div>
+
+<h2>How to publish Open Access</h2>
+  <p>If you are planning to publish Open Access, the next step is to consider how your work can be reused and shared.</p>
+  <p>This depends largely on the license you choose.</p>
+  <h3>Choosing the Right License</h3>
+  <p>The following questions will help you decide which license model best fits your publication.</p>
+  <p>To make this more concrete, you may want to think about one specific publication while exploring the options.</p>
+<div id="licenses">
+  {% include "story/components/licences.html" %}
+<p style="text-align: right; font-size: 10px; color: #0077cc"><i><a href="https://creativecommons.org/chooser/" target="_blank">Creative Commons Chooser</a></i></p>  
+</div>
+
+<div id="where-oa">
+  <h2>Where to publish Open Access</h2>
+  <p>Once the license question is clear, the next decision is where to publish or deposit your work.</p>
+  <p>There are different options where you can publish Open Access.</p>
+  {% include "story/components/where_publish.html" %}
+  <p style="text-align: right; font-size: 10px;"><i><a href="https://www.uni-bamberg.de/en/library/publishing/oa-publishing/" target="_blank">University of Bamberg: Open Access Publishing</a></i></p>
+</div>
+
+
+
+<div>
+  {% include "story/components/bison.html" %}
+</div>
+
+
+<div id="funds">
+  <h2>Funding</h2>
+  <p>Publishing Open Access may involve publication fees. To support researchers, the University of Bamberg promotes Open Access publishing through its Open Access fund in its Open Access Declaration:</p>
+    <!--<sup class="ref" data-ref="oa-declaration">[1]</sup>:</p>-->
+  <div class="quote-block">
+    <p>The financing of publication fees for quality-checked open access journals is supported by a central open access fund.</p>
+  </div>
+  <p>Further information on funding Open Access publications is available on the <a href="https://www.uni-bamberg.de/en/library/publishing/oa-publishing/funding-oa-articles/" target="_blank" rel="noopener noreferrer">website</a> of the University Library.</p>
+</div>
+
+<!--<div id="references">
+  <h2>References and further information</h2>
+  <ol>
+    <li id="ref-oa-declaration">
+      “Open Access Declaration” University of Bamberg. [<a href="https://www.uni-bamberg.de/en/research/research-culture/policies/open-access-declaration/" target="_blank">Online</a>].
+    </li>
+
+    <li id="ref-doaj">
+      Directory of Open Access Journals (DOAJ).
+      <a href="https://www.doaj.org" target="_blank">https://www.doaj.org</a>
+    </li>
+  </ol>
+</div>
+-->
+
+<script src="{% static 'story/js/navigation.js' %}" defer></script>
+                                         
+
+{% endblock %}
+
+<script>
+  // References
+document.querySelectorAll(".ref").forEach(ref => {
+  ref.addEventListener("click", () => {
+    const id = "ref-" + ref.dataset.ref;
+    const target = document.getElementById(id);
+    if (!target) return;
+
+    target.scrollIntoView({ behavior: "smooth" });
+    target.classList.add("highlight");
+
+    setTimeout(() => target.classList.remove("highlight"), 2000);
+  });
+});
+</script>

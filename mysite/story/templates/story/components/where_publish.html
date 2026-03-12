@@ -1,0 +1,64 @@
+<h3>Publishing at the University of Bamberg:</h3>
+<div class="oa-accordion">
+
+  <div class="oa-item">
+    <button class="oa-toggle">FIS - The Research Information System</button>
+    <div class="oa-content">
+      <p>FIS is the institutional repository of the University of Bamberg, where researchers can publish Open Access directly or deposit already published articles.</p>
+    </div>
+  </div>
+
+  <div class="oa-item">
+    <button class="oa-toggle">UBP - University of Bamberg Press</button>
+    <div class="oa-content">
+      <p>As a member of the University of Bamberg, you can publish with UBP or edit a journal.</p>
+    </div>
+  </div>
+</div>
+<h3>Tools to Find the Right Open Access Journal</h3>
+<div class="oa-accordion">
+  <div class="oa-item">
+    <button class="oa-toggle">oa.finder</button>
+    <div class="oa-content">
+      <p>If you have a manuscript but are unsure where to publish Open Access, or about costs, <a href="https://finder.open-access.network/" target="_blank" rel="noopener noreferrer">oa.finder</a> helps you find suitable OA journals or publishers for books.</p>
+    </div>
+  </div>
+
+  <div class="oa-item">
+    <button class="oa-toggle">DOAJ - Directory of Open Access Journals</button>
+    <div class="oa-content">
+      <p><a href="https://doaj.org/" target="_blank" rel="noopener noreferrer">DOAJ</a> offers a comprehensive list of quality-checked Open Access journals.</p>
+    </div>
+  </div>
+
+   <div class="oa-item">
+    <button class="oa-toggle">B!SON - Open Access Recommender Network</button>
+    <div class="oa-content">
+      <p><a href="https://service.tib.eu/bison/" target="_blank" rel="noopener noreferrer">B!SON</a> is a project by TIB and SLUB Dresden, implementing a recommendation service for quality-assured Open Access journals.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+document.querySelectorAll(".oa-toggle").forEach(toggle => {
+  toggle.addEventListener("click", () => {
+    const content = toggle.nextElementSibling;
+
+    // Toggle active class
+    toggle.classList.toggle("active");
+
+    if (content.style.maxHeight) {
+      // schließen
+      content.style.maxHeight = null;
+      content.style.paddingTop = "0";
+      content.style.paddingBottom = "0";
+    } else {
+      // öffnen
+      content.style.maxHeight = content.scrollHeight + "px";
+      content.style.paddingTop = "12px";
+      content.style.paddingBottom = "12px";
+    }
+  });
+});
+
+</script>

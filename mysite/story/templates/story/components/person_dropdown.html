@@ -1,0 +1,45 @@
+<form id="person-form" method="POST">
+  {% csrf_token %}
+  <label for="person-select">Now that you’ve seen the institutional perspective, let’s turn to your own publications:</label>
+  <select name="orcid" id="person-select" class="js-person-select" style="width: 100%;">
+    <option value="" disabled {% if not selected_orcid %}selected{% endif %}>
+      -- Please select a person --
+    </option>
+    {% for person in people %}
+      <option value="{{ person.orcid }}" {% if person.orcid == selected_orcid %}selected{% endif %}>
+      <!-- {% if data and data.person_info.orcid == person.orcid %}selected{% endif %} -->
+        {{ person.name }}
+      </option>
+    {% empty %}
+      <option disabled>No people found</option>
+    {% endfor %}
+  </select>
+  <button type="submit">Explore</button>
+</form>
+
+<script>
+  $(document).ready(function() {
+    $('.js-person-select').select2({
+      placeholder: 'Please select or type a name...',
+      allowClear: true
+    });
+
+    const selectedOrcid = "{{ selected_orcid|default:'' }}";
+
+    // Restore selection if a person was chosen
+    if (selectedOrcid) {
+      $('#person-select').val(selectedOrcid).trigger('change.select2');
+
+      // Scroll after a person was selected
+      requestAnimationFrame(() => {
+        const target = document.getElementById("quo-vadis");
+        if (target) {
+          target.scrollIntoView({ behavior: "smooth", block: "start" });
+          history.replaceState(null, "", "#quo-vadis");
+        }
+      });
+    }
+  });
+</script>
+
+

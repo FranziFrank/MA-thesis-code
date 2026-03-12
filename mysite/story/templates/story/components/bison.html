@@ -1,0 +1,177 @@
+ <head><style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background: #ffffff;
+        }
+        
+        #results{
+          background: #fff;
+          position: relative;
+          border-radius: 12px;
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+          padding: 20px;
+          padding-bottom: 40px;
+          margin-bottom: 40px;
+          pointer-events: auto;
+          max-width: 700px;   /* keeps box from being too wide */
+          margin-left: auto;
+          margin-right: auto;  /* horizontally center the box */
+        }
+
+        #bison-tooltip {
+            position: absolute;
+            pointer-events: none;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 10px 14px;
+            border-radius: 6px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+            font-size: 13px;
+            color: #111;
+            line-height: 1.4;
+            max-width: 300px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            z-index: 5000;
+        }
+    </style>
+</head>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<body>
+
+<h3>Recommended Journals</h3>
+
+<p>Based on your research subjects and recommended articles B!son has identified the following five Open Access journals as suitable options for you.</p>
+
+<div id="results">
+    <canvas id="bison-chart" width="600" height="350"></canvas>
+</div>
+
+
+
+<script>
+    let bisonChart = null;
+    let pinnedTooltipIndex = null; 
+
+window.runBisonAbstractOnly = function(recommendedEntries, subjectList) {
+  // Combine recommended titles + subjects into abstract
+  const recommendedTitles = recommendedEntries?.map(d => d.title).join(", ") || "";
+  const subjectsText = subjectList?.join(", ") || "";
+  const combinedAbstract = [recommendedTitles, subjectsText].filter(Boolean).join(". ");
+
+  console.log("BISON abstract-only search:", combinedAbstract);
+
+  fetch("https://service.tib.eu/bison/api/public/v1/search", {
+    method: "POST",
+    headers: {
+      "Accept": "application/json",
+      "Content-Type": "application/json",
+      "User-Agent": "oa-visualization"
+    },
+    body: JSON.stringify({
+      title: "",             // empty
+      abstract: combinedAbstract,
+      references: ""         // optional
+    })
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (!data.journals || data.journals.length === 0) {
+        document.getElementById("bison-results").innerHTML =
+          "<p>No journal recommendations found.</p>";
+        return;
+      }
+      const top5 = data.journals.slice(0, 5);
+      renderBisonChart(top5);  // existing chart rendering function
+    })
+    .catch(err => console.error("BISON error:", err));
+};
+
+function renderBisonChart(journals) {
+  const labels = journals.map(j => j.title);
+  const values = journals.map(j => Math.round(j.score.value * 100));
+  const colors = journals.map(() => "#0077cc"); 
+
+  const ctx = document.getElementById("bison-chart").getContext("2d");
+
+  if (bisonChart) bisonChart.destroy();
+
+  // Create or get tooltip div
+  let tooltipEl = document.getElementById('chartjs-tooltip');
+  if (!tooltipEl) {
+    tooltipEl = document.createElement('div');
+    tooltipEl.id = 'bison-tooltip';
+    document.body.appendChild(tooltipEl);
+  }
+
+  bisonChart = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: labels,
+      datasets: [{
+        label: "Journal match (%)",
+        data: values,
+        backgroundColor: colors
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      scales: {
+        x: {
+          beginAtZero: true,
+          max: 100,
+          ticks: { callback: val => val + "%" }
+        }
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          enabled: false, // Disable default tooltip
+          external: function(context) {
+            const tooltipModel = context.tooltip;
+
+            // Hide tooltip if no active bar and nothing is pinned
+            if (tooltipModel.opacity === 0 && pinnedTooltipIndex === null) {
+              tooltipEl.style.opacity = 0;
+              return;
+            }
+
+            const index = tooltipModel.dataPoints[0].dataIndex;
+            const journal = journals[index];
+            const link = journal.idx ? `https://service.tib.eu/bison/journal/${journal.idx}` : "#";
+
+            tooltipEl.innerHTML = `
+              <strong>${journal.title}</strong><br/>
+              <i>Publisher:</i> ${journal.publisher_name || "Unknown"}<br/>
+              <i>Match:</i> ${values[index]}%<br/>
+              <i>Click bar to open B!son page</i>
+            `;
+
+            const canvasPosition = context.chart.canvas.getBoundingClientRect();
+            const caretX = tooltipModel.caretX || (canvasPosition.width / 2);
+            const caretY = tooltipModel.caretY || (canvasPosition.height / 2);
+
+            tooltipEl.style.left = canvasPosition.left + window.pageXOffset + caretX + 'px';
+            tooltipEl.style.top = canvasPosition.top + window.pageYOffset + caretY - 50 + 'px';
+            tooltipEl.style.opacity = 1;
+          }
+        }
+      },
+      onClick: (evt, elements) => {
+        if (elements.length > 0) {
+          const idx = elements[0].index;
+          const journal = journals[idx];
+          if (journal.idx) {
+            window.open(`https://service.tib.eu/bison/journal/${journal.idx}`, "_blank");
+          }
+        }
+        }
+    }
+  });
+}
+</script>
+
+</body>

@@ -1,0 +1,341 @@
+{% load static %}
+<template id="open-access-quiz-template">
+  <style>
+    /*#open-access-quiz {
+      font-family: "Helvetica Neue", sans-serif;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      padding: 20px;
+      margin-bottom: 20px;
+      margin: 20px auto; /* vertical 20px, horizontal auto → centers horizontally 
+      text-align: center;
+    }*/
+
+    #open-access-quiz h2 {
+      font-size: 1.4rem;
+      margin-top: 0;
+      margin-bottom: 1rem;
+      border-bottom: 2px solid #f0f0f0;
+      padding-bottom: 0.5rem;
+    }
+
+    #open-access-quiz .intro {
+      color: #777;
+      font-style: italic;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Tree-like structure (optional future extension) */
+    #open-access-quiz .oa-knowledge {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Nodes */
+    #open-access-quiz .node,
+    #open-access-quiz .question,
+    #open-access-quiz .answer {
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 12px;
+      margin: 12px 0;
+      padding: 20px;
+      margin-bottom: 20px;
+      width: 95%;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
+    }
+
+    #open-access-quiz .node:hover,
+    #open-access-quiz .question:hover {
+      transform: scale(1.03);
+    }
+
+    /* Question headline styling */
+    #open-access-quiz .question p {
+      font-weight: 600;
+      font-size: 1.05rem;      /* smaller than h2, larger than body */
+      margin-bottom: 10px;
+      color: #222;
+      text-align: center;
+    }
+
+    /* Nested questions should be visually subordinate */
+    #open-access-quiz .answer .question {
+      max-width: 80%;
+      margin-top: 12px;
+      padding: 12px;
+      background: #f9fafb;
+      box-shadow: none;
+      border: 1px dashed #ccc;
+      transform: none;
+    }
+
+    /* smaller for nested questions */
+    #open-access-quiz .answer .question p {
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    /* Question as answer heading */
+    #open-access-quiz .answer-question {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin: 0 0 0.75rem;
+      color: #111;
+    }
+
+    /* Options */
+    #open-access-quiz .options {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 10px;
+    }
+
+    /* Buttons */
+    #open-access-quiz button {
+      background: #0077cc;
+      color: white;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+
+    #open-access-quiz button:hover {
+      background: #005fa3;
+    }
+
+    /* Answer blocks */
+    #open-access-quiz .answer {
+      text-align: left;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    /* Links */
+    #open-access-quiz a {
+      color: #0077cc;
+      text-decoration: underline;
+    }
+  </style>
+
+<div id="open-access-quiz">
+
+    <!-- Question 1 -->
+    <div id="q1" class="question node">
+      <p>Do you know about Open Access?</p>
+      <div class="options">
+        <button data-q="q1" data-a="yes">Yes</button>
+        <button data-q="q1" data-a="somewhat">A little bit</button>
+        <button data-q="q1" data-a="no">No</button>
+      </div>
+    </div>
+
+    <!-- a1 yes -->
+    <div id="a1-yes" class="answer node" hidden>
+      <h3>Open Access</h3>
+      <p>
+        Excellent. As you know, Open Access as part of Open Science, allows publications to be freely accessible online.
+      </p>
+
+      <div id="q2" class="question node" hidden>
+        <p>Have you already published Open Access?</p>
+        <div class="options">
+          <button data-q="q2" data-a="yes">Yes</button>
+          <button data-q="q2" data-a="no">No</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- a1 no -->
+    <div id="a1-no" class="answer node" hidden>
+      <p>No problem. Before we look at different Open Access for you, here you can learn about Open Access generally.</p>
+      <h3>Open Access</h3>
+      <p>
+        Open Access means that scientific and scholarly publications are available free of charge and publicly on the internet and can be used, copied, distributed and reproduced without restriction, provided that the authorship is correctly stated. The author retains all rights to the publication.
+      </p>
+      <h3>Why is Open Access important?</h3>
+<img src="{% static 'story/10_reasons_OA.png' %}" alt="PDF preview"
+     style="max-width:100%; height:auto; display:block; margin:auto;">
+<p>Next to these fundamental reasons for Open Access the University of Bamberg promotes publishing Open Access in its Open Access Declaration:</p>
+<div class="quote-block">
+  <p><i>The university management encourages the university's academics to publish in open access journals and also to promote open access journals as reviewers and editors.</i></p>
+  </div>
+      <h3>Golden and Green Open Access</h3>
+      <p>The term "Golden Way" describes the publishing of scientific papers directly in open access journals or through open access publishers.
+
+Often, the financing of open access magazines is facilitated in a model financed by the authors.
+
+Authors and editors must pay publication fees for publication. In the case of journals, the usually considerable subscription or licensing costs for the journal do not apply.
+
+      </p><p>The term "Green Route" is the parallel publication of planned or already published research articles on document servers (repositories). Most scientific publishers allow journal articles and contributions to collective works to be published as pre- or post-prints via the publishers' self-archiving policies.</p>
+      <p>
+        Learn more at the
+        <a href="https://open-access.network/en/home" target="_blank">
+          open access network
+        </a>.</p>
+        <p style="text-align: right; font-size: 10px;"><i><a href="https://www.uni-bamberg.de/en/library/publishing/oa-publishing/" target="_blank">University of Bamberg: Open Access Publishing</a></i></p>
+    </div>
+
+    <!-- a1 somewhat -->
+    <div id="a1-somewhat" class="answer node" hidden>
+      <h3>Open Access</h3>
+      <p>
+        As you may know, Open Access means that scientific and scholarly publications are available free of charge and publicly on the internet and can be used, copied, distributed and reproduced without restriction, provided that the authorship is correctly stated. The author retains all rights to the publication.
+      </p>
+      <h3>Why is Open Access important?</h3>
+<img src="{% static 'story/10_reasons_OA.png' %}" alt="PDF preview"
+     style="max-width:100%; height:auto; display:block; margin:auto;">
+<p>Next to these fundamental reasons for Open Access the University of Bamberg promotes publishing Open Access in its Open Access Declaration:</p>
+<div class="quote-block">
+  <p><i>The university management encourages the university's academics to publish in open access journals and also to promote open access journals as reviewers and editors.</i></p>
+  </div>
+      <div id="q2c" class="question node" hidden>
+        <p>Have you already published Open Access?</p>
+        <div class="options">
+          <button data-q="q2c" data-a="yes">Yes</button>
+          <button data-q="q2c" data-a="no">No</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- a2 yes -->
+    <div id="a2-yes" class="answer node" hidden>
+      <p>
+        That’s great! Do you know of the different models for Open Access Publishing, such as gold and green?
+      </p>
+      <h3>Golden and Green Open Access</h3>
+      <p>The term "Golden Way" describes the publishing of scientific papers directly in open access journals or through open access publishers.
+
+Often, the financing of open access magazines is facilitated in a model financed by the authors.
+
+Authors and editors must pay publication fees for publication. For articles, these are the so-called "article processing charges" (ABCs), for books the "book processing charges" (BPCs). In the case of journals, the usually considerable subscription or licensing costs for the journal do not apply.
+
+      </p><p>The term "Green Route" is the parallel publication of planned or already published research articles on document servers (repositories). Most scientific publishers allow journal articles and contributions to collective works to be published as pre- or post-prints via the publishers' self-archiving policies.</p>
+      <p style="text-align: right; font-size: 10px;"><i><a href="https://www.uni-bamberg.de/en/library/publishing/oa-publishing/" target="_blank">University of Bamberg: Open Access Publishing</a></i></p>
+      <div id="q3" class="question node" hidden>
+        <p>Have you already published Green Open Access?</p>
+        <div class="options">
+          <button data-q="q3" data-a="yes">Yes</button>
+          <button data-q="q3" data-a="no">No</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- a2 no -->
+    <div id="a2-no" class="answer node" hidden>
+      <p>There are different models for Open Access Publishing, such as green and gold.</p>
+      <h3>Gold and Green Open Access</h3>
+      <p>
+        The term "Golden Way" describes the publishing of scientific papers directly in open access journals or through open access publishers.
+
+Often, the financing of open access magazines is facilitated in a model financed by the authors.
+
+Authors and editors must pay publication fees for publication. For articles, these are the so-called "article processing charges" (ABCs), for books the "book processing charges" (BPCs). In the case of journals, the usually considerable subscription or licensing costs for the journal do not apply.
+
+      </p><p>The term "Green Route" is the parallel publication of planned or already published research articles on document servers (repositories). Most scientific publishers allow journal articles and contributions to collective works to be published as pre- or post-prints via the publishers' self-archiving policies.
+      </p>
+      <p style="text-align: right; font-size: 10px;"><i><a href="https://www.uni-bamberg.de/en/library/publishing/oa-publishing/" target="_blank">University of Bamberg: Open Access Publishing</a></i></p>
+    </div>
+    
+    <div id="a2c-yes" class="answer node" hidden>
+      <p>
+        That’s great! There are different models for Open Access Publishing, such as green and gold.
+      </p>
+      <h3>Golden and Green Open Access</h3>
+      <p>The term "Golden Way" describes the publishing of scientific papers directly in open access journals or through open access publishers.
+
+Often, the financing of open access magazines is facilitated in a model financed by the authors.
+
+Authors and editors must pay publication fees for publication. For articles, these are the so-called "article processing charges" (ABCs), for books the "book processing charges" (BPCs). In the case of journals, the usually considerable subscription or licensing costs for the journal do not apply.
+
+      </p><p>The term "Green Route" is the parallel publication of planned or already published research articles on document servers (repositories). Most scientific publishers allow journal articles and contributions to collective works to be published as pre- or post-prints via the publishers' self-archiving policies.</p>
+
+      <div id="q3" class="question node" hidden>
+        <p>Have you already published Green Open Access?</p>
+        <div class="options">
+          <button data-q="q3" data-a="yes">Yes</button>
+          <button data-q="q3" data-a="no">No</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- a2 no -->
+    <div id="a2c-no" class="answer node" hidden>
+      <p>There are different models for Open Access Publishing, such as green and gold.</p>
+      <h3>Gold and Green Open Access</h3>
+      <p>
+        The term "Golden Way" describes the publishing of scientific papers directly in open access journals or through open access publishers.
+
+Often, the financing of open access magazines is facilitated in a model financed by the authors.
+
+Authors and editors must pay publication fees for publication. For articles, these are the so-called "article processing charges" (ABCs), for books the "book processing charges" (BPCs). In the case of journals, the usually considerable subscription or licensing costs for the journal do not apply.
+
+      </p><p>The term "Green Route" is the parallel publication of planned or already published research articles on document servers (repositories). Most scientific publishers allow journal articles and contributions to collective works to be published as pre- or post-prints via the publishers' self-archiving policies.
+      </p>
+      <p style="text-align: right; font-size: 10px;"><i><a href="https://www.uni-bamberg.de/en/library/publishing/oa-publishing/" target="_blank">University of Bamberg: Open Access Publishing</a></i></p>
+    </div>
+    <!-- a3 yes -->
+    <div id="a3-yes" class="answer node" hidden>
+      <p>
+        Perfect! Since you are already familiar with Open Access, it may be interesting to see what percentage of your work is available as Open Access.</p>
+    </div>
+
+    <!-- a3 no -->
+    <div id="a3-no" class="answer node" hidden>
+      <p>No problem. Further information on Green Open Access options for your publications will be provided shortly.</p>
+    </div>
+
+  </div>
+</div>
+</template>
+
+<script>
+    class OpenAccessQuiz extends HTMLElement {
+  constructor() {
+    super();
+    const template = document.getElementById("open-access-quiz-template");
+    if (!template) {
+      console.error("❌ Template not found.");
+      return;
+    }
+    const shadow = this.attachShadow({ mode: "open" });
+    shadow.appendChild(template.content.cloneNode(true));
+  }
+
+  connectedCallback() {
+    const root = this.shadowRoot;
+    root.querySelectorAll("button[data-q]").forEach(btn => {
+      btn.addEventListener("click", e => {
+        const q = e.target.dataset.q;
+        const a = e.target.dataset.a;
+        this.showAnswer(q, a);
+      });
+    });
+  }
+
+  showAnswer(questionId, answer) {
+    const root = this.shadowRoot;
+    const qEl = root.getElementById(questionId);
+    if (qEl) qEl.hidden = true;
+    root.querySelectorAll(`[id^="a${questionId.slice(1)}-"]`).forEach(el => el.hidden = true);
+    const target = root.getElementById(`a${questionId.slice(1)}-${answer}`);
+    if (target) {
+      target.hidden = false;
+      const nextQ = target.querySelector(".question");
+      if (nextQ) nextQ.hidden = false;
+    }
+  }
+}
+
+customElements.define("open-access-quiz", OpenAccessQuiz);
+
+</script>
