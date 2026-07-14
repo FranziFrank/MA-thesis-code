@@ -11,20 +11,22 @@ SHERPA_API_KEY = os.getenv("SHERPA_API_KEY")
 # print(SHERPA_API_KEY)
 
 def get_sherpa_journal(issn, save_dir=os.path.join("static", "opf_data")):
-    url = f"https://v2.sherpa.ac.uk/cgi/retrieve_by_id"
+    url = f"https://api.openpolicyfinder.jisc.ac.uk/retrieve_by_id"
     params = {
         'item-type': 'publication',
-        'api-key': SHERPA_API_KEY,
         "format": "Json",
         "identifier" : f"{issn}"
     }
+    headers = {
+    "x-api-key": SHERPA_API_KEY
+    }
     
-    response = safe_requests_get(url, params=params)
+    response = safe_requests_get(url, params=params, headers=headers,)
     
     if response.status_code == 200:
         data = response.json()
         item_count = len(data.get('message', {}).get('items', []))
-        # print(f"Retrieved {item_count} works for ISSN {issn}")
+        print(f"Retrieved {item_count} works for ISSN {issn}")
         
         # Create directory if it doesn't exist
         os.makedirs(save_dir, exist_ok=True)
